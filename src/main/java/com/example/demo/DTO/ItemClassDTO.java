@@ -1,5 +1,7 @@
 package com.example.demo.DTO;
 import com.example.demo.Enums.ItemEnums;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -11,61 +13,32 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class ItemClassDTO {
 
-    private Integer ItemClassId;
+    private Integer itemClassId;
 
     @NotNull(message = "Name is required")
-    @NotBlank(message = "Name cant be blank")
+    @NotBlank(message = "Name can't be blank")
     private String name;
 
-    @NotNull(message = "Parent Item Class ID is required")
-    private Integer parentItemClassId;
-
-    private String tableName;
-    private Integer attributeGroupId;
-    @Getter
+    @Enumerated(EnumType.STRING) // Matching enum types
     private ItemEnums.TypeOfCoding typeOfCode;
+
     private String comment;
-    private Boolean allowNegativeBalance;
-    private Boolean appearInOperation;
+    private Boolean activeFlag; // Changed to match entity field name
     private Boolean expiry;
     private Boolean sellable;
     private Boolean purchasable;
     private Boolean crmItemClass;
     private Boolean stockable;
-    private String nameEn;
-    private Boolean sellingPriceFromBatch;
-    private Double profitMargin;
-    private String tableNameEn;
-    private String internalClassCode;
-    private String internalClassCodeEn;
-    private String commentEn;
-
-    private Integer autoGenerateCode;
-    private Boolean isMergable;
     private Boolean hasBarcode;
-    private Integer itemClassTypeId;
-    private Boolean isDefault;
     private ItemEnums.ManagementMethod managementMethod;
-    private Integer serialCount;
-    private Boolean hasVersion;
-    private Boolean useStandardColors;
     private ItemEnums.ValuationMethod valuationMethod;
-    private Integer brandsModelsOptions;
-
-    private Integer companyId;
-
+    private ItemEnums.BrandsModelsOptions brandsModelsOptions; // Updated type
     private Boolean quantityChangable;
-    private Boolean hasCrossNetWeight;
-    private Integer itemClassPackingUnitId;
-    private ItemEnums.ItemType itemClassItemsTypeId;
-    private String purchasingCostGlAccountCode;
-    private String salesCostGlAccountCode;
-    private String salesRevenueGlAccountCode;
-    private String losesGlAccountCode;
-    private Boolean serialIsRequired;
     private Integer periodicMaintenanceServiceItemSid;
     private Integer periodicMaintenanceServiceMonths;
     private Boolean hasOneUnit;
-    private Boolean additions;
+    private Boolean isMergable;
+    private ItemEnums.ItemType itemType; // Changed field name to itemType
 
+    private Boolean customerService; // If needed, otherwise remove or adjust as required
 }

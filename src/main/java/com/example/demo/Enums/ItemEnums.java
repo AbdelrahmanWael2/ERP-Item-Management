@@ -3,8 +3,18 @@ package com.example.demo.Enums;
 public class ItemEnums {
 
     public enum TypeOfCoding {
-        SEQUENTIAL,
-        MANUAL
+        SEQUENTIAL(1),
+        MANUAL(2);
+
+        private final int value;
+
+        TypeOfCoding(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 
     public enum ValuationMethod {
@@ -36,6 +46,18 @@ public class ItemEnums {
         public int getValue() {
             return value;
         }
+    }
+
+    public enum BrandsModelsOptions{
+        None(0),
+        Brands(1),
+        Brands_And_Models(2);
+
+        private final int value;
+
+        BrandsModelsOptions(int value){this.value = value;}
+
+        public int getValue(){return value;}
     }
 
     public enum ManagementMethod {

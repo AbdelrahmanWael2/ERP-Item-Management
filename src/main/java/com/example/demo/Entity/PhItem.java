@@ -21,11 +21,7 @@ public class PhItem implements Serializable {
     @Column(name="ACTIVE_FLAG")
     private Byte activeFlag;
 
-    @Column(name="BAR_CODE")
-    private String barCode;
 
-    @Column(name="BAR_CODE_EN")
-    private String barCodeEn;
 
     @Column(name="CAN_BE_ADDITION")
     private byte canBeAddition;
@@ -48,23 +44,11 @@ public class PhItem implements Serializable {
     @Column(name="ITEM_GROUP_ID")
     private Integer itemGroupId;
 
-    @Column(name="NAME")
-    private String name;
+    @Column(name="NAME_AR")
+    private String nameAr;
 
     @Column(name="NAME_EN")
     private String nameEn;
-
-    @Column(name="PACKING_UNIT_ID")
-    private Integer packingUnitId;
-
-    @Column(name="SELLABLE")
-    private Boolean sellable;
-
-    @Column(name="PURCHASABLE")
-    private Boolean purchasable;
-
-    @Column(name="STOCKABLE")
-    private Boolean stockable;
 
     @Column(name="TYPE")
     private Integer type;
@@ -72,30 +56,58 @@ public class PhItem implements Serializable {
     @Column(name="HAS_VARIANTS")
     private Byte hasVariants;
 
-    @Column(name="HAS_VERSIONS")
-    private Byte hasVersions;
+    @Column(name="ITEM_TYPE")
+    private Integer itemType;
 
-    // Stock-related fields
-    @Column(name="AVALIABLE_QUANTITY")
-    private double avaliableQuantity;
+    @Column(name="HAS_WARRANTY")
+    private Byte hasWarranty;
 
-    @Column(name="COMMITED_QUANTITY")
-    private double commitedQuantity;
+    @Column(name="SHELF_NUMBER")
+    private String shelfNumber;
 
-    @Column(name="MIN_STOCK_LEVEL")
-    private double minStockLevel;
+//    @Column(name="PACKING_UNIT_ID")
+//    private Integer packingUnitId;
+//
+//    @Column(name="SELLABLE")
+//    private Boolean sellable;
+//
+//    @Column(name="PURCHASABLE")
+//    private Boolean purchasable;
+//
+//    @Column(name="STOCKABLE")
+//    private Boolean stockable;
 
-    @Column(name="ORDERD_QUANTITY")
-    private double orderdQuantity;
 
-    @Column(name="QOH")
-    private double qoh;
+//
+//    @Column(name="HAS_VERSIONS")
+//    private Byte hasVersions;
 
-    @Column(name="REORDER_POINT")
-    private double reorderPoint;
+//    // Stock-related fields
+//    @Column(name="AVALIABLE_QUANTITY")
+//    private double avaliableQuantity;
+//
+//    @Column(name="COMMITED_QUANTITY")
+//    private double commitedQuantity;
+//
+//    @Column(name="MIN_STOCK_LEVEL")
+//    private double minStockLevel;
+//
+//    @Column(name="ORDERD_QUANTITY")
+//    private double orderdQuantity;
+//
+//    @Column(name="QOH")
+//    private double qoh;
+//
+//    @Column(name="REORDER_POINT")
+//    private double reorderPoint;
+//
+//    @Column(name="WEIGHTED_AVERAGE_COST")
+//    private double weightedAverageCost;
 
-    @Column(name="WEIGHTED_AVERAGE_COST")
-    private double weightedAverageCost;
+
+
+//    @Column(name="SALES_DISCOUNT_GROUP_ID")
+//    private Integer salesDiscountGroupId;
 
     // Extra attributes (commented out)
     /*
@@ -148,11 +160,11 @@ public class PhItem implements Serializable {
     @Column(name="DIFFERENTIATE_GROUPS")
     private Byte differentiateGroups;
 
-    @Column(name="ENGLISH_NAME")
-    private String englishName;
-
-    @Column(name="ENGLISH_NAME_EN")
-    private String englishNameEn;
+//    @Column(name="BAR_CODE")
+//    private String barCode;
+//
+//    @Column(name="BAR_CODE_EN")
+//    private String barCodeEn;
 
     @Column(name="EXPIRY_DAYS")
     private Integer expiryDays;
@@ -172,8 +184,7 @@ public class PhItem implements Serializable {
     @Column(name="HAS_PERIODIC_MAINTENANCE")
     private Byte hasPeriodicMaintenance;
 
-    @Column(name="HAS_WARRANTY")
-    private Byte hasWarranty;
+
 
     @Column(name="INTERNAL_CLASS_CODE")
     private String internalClassCode;
@@ -184,8 +195,7 @@ public class PhItem implements Serializable {
     @Column(name="ITEM_MODEL")
     private String itemModel;
 
-    @Column(name="ITEM_TYPE")
-    private Integer itemType;
+
 
     @Column(name="ITEM_VERSION_SID")
     private Integer itemVersionSid;
@@ -257,8 +267,7 @@ public class PhItem implements Serializable {
     @Column(name="SALES_COST_GL_ACCOUNT_CODE")
     private String salesCostGlAccountCode;
 
-    @Column(name="SALES_DISCOUNT_GROUP_ID")
-    private Integer salesDiscountGroupId;
+
 
     @Column(name="SALES_REVENUE_GL_ACCOUNT_CODE")
     private String salesRevenueGlAccountCode;
@@ -266,8 +275,6 @@ public class PhItem implements Serializable {
     @Column(name="SERIAL_SUFFIX")
     private String serialSuffix;
 
-    @Column(name="SHELF_NUMBER")
-    private String shelfNumber;
 
     @Column(name="SCIENTIFIC_NAME")
     private String scientificName;

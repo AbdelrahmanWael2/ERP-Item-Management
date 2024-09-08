@@ -13,7 +13,7 @@ public class PhItemClassDto {
 
     // master  Data
     private Integer itemSid;
-    private String name;
+    private String nameAr;
     private String nameEn;
     private Integer itemClassId;
     private Integer itemGroupId;
@@ -43,17 +43,17 @@ public class PhItemClassDto {
     private Byte activeFlag;
 
 
-    // stock
-    private double avaliableQuantity;
-
-    private double commitedQuantity;
-
-    private double minStockLevel;
-    private double orderdQuantity;
-    private double qoh;
-    private double reorderPoint;
-
-    private double weightedAverageCost;
+//    // stock
+//    private double avaliableQuantity;
+//
+//    private double commitedQuantity;
+//
+//    private double minStockLevel;
+//    private double orderdQuantity;
+//    private double qoh;
+//    private double reorderPoint;
+//
+//    private double weightedAverageCost;
 
 
 //    private List<PhItem> variants ;

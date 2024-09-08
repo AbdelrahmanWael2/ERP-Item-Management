@@ -19,11 +19,11 @@ public class ItemClassDTO {
     @NotBlank(message = "Name can't be blank")
     private String name;
 
-    @Enumerated(EnumType.STRING) // Matching enum types
+    @Enumerated(EnumType.STRING)
     private ItemEnums.TypeOfCoding typeOfCode;
 
     private String comment;
-    private Boolean activeFlag; // Changed to match entity field name
+    private Boolean activeFlag;
     private Boolean expiry;
     private Boolean sellable;
     private Boolean purchasable;
@@ -32,13 +32,12 @@ public class ItemClassDTO {
     private Boolean hasBarcode;
     private ItemEnums.ManagementMethod managementMethod;
     private ItemEnums.ValuationMethod valuationMethod;
-    private ItemEnums.BrandsModelsOptions brandsModelsOptions; // Updated type
+    private ItemEnums.BrandsModelsOptions brandsModelsOptions;
     private Boolean quantityChangable;
     private Integer periodicMaintenanceServiceItemSid;
     private Integer periodicMaintenanceServiceMonths;
     private Boolean hasOneUnit;
     private Boolean isMergable;
-    private ItemEnums.ItemType itemType; // Changed field name to itemType
-
-    private Boolean customerService; // If needed, otherwise remove or adjust as required
+    private ItemEnums.ItemType itemType;
+    private Boolean customerService;
 }

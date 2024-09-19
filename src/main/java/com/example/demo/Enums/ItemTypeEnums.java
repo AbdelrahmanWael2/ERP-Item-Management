@@ -8,9 +8,9 @@ public class ItemTypeEnums {
 
     @Getter
     public enum ItemTypes {
-        VARIANT(1), // 1
-        ITEM(0), // 0
-        TEMPLATE(2); //2
+        VARIANT(2),
+        ITEM(1),
+        TEMPLATE(3);
 
         private final Integer value;
 

@@ -8,11 +8,9 @@ import com.example.demo.Repository.*;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class PhItemService {
@@ -43,69 +41,68 @@ public class PhItemService {
     public void unselectVariant(Integer sid) {
 
         Optional<PhItem> itemFound = phItemRepository.findById(sid);
-        Integer itemClassId = itemFound.get().getItemClassId();
-
-        // find items by class id
-        List<PhItem> phItems = phItemRepository.findByItemClassId(itemClassId);
+        if(itemFound.isPresent()) {
+            Integer itemClassId = itemFound.get().getItemClassId();
 
 
-        for (PhItem phItem : phItems) {
+            // find items by class id
+            List<PhItem> phItems = phItemRepository.findByItemClassId(itemClassId);
 
 
-
-            Optional<ItemType> optionalItemType = itemTypeRepository.findBySidAndNameEn(phItem.getItemSid(),
-                    String.valueOf(ItemTypeEnums.ItemTypes.VARIANT));
-
-            Optional<ItemType> optionalItemType2 = itemTypeRepository.findBySidAndNameEn(phItem.getItemSid(),
-                    String.valueOf(ItemTypeEnums.ItemTypes.ITEM));
-
-            if (optionalItemType.isPresent()) {
-                List<ItemVariantDimensionValue> dimensionValues = itemVariantDimensionValueRepository.findByItemSid(phItem.getItemSid());
-                itemVariantDimensionValueRepository.deleteAll(dimensionValues);
-
-                List<ItemVariantDimension> variantDimensions = itemVariantDimensionRepository.findByItemSid(phItem.getItemSid());
-                itemVariantDimensionRepository.deleteAll(variantDimensions);
-
-                itemTypeRepository.delete(optionalItemType.get());
-
-                phItemRepository.delete(phItem);
+            for (PhItem phItem : phItems) {
 
 
-            } else if (optionalItemType2.isPresent()) {
-                phItem.setHasVariants((byte) 0);
+                Optional<ItemType> optionalItemType = itemTypeRepository.findBySidAndNameEn(phItem.getItemSid(),
+                        String.valueOf(ItemTypeEnums.ItemTypes.VARIANT));
+
+                Optional<ItemType> optionalItemType2 = itemTypeRepository.findBySidAndNameEn(phItem.getItemSid(),
+                        String.valueOf(ItemTypeEnums.ItemTypes.ITEM));
+
+                if (optionalItemType.isPresent()) {
+                    List<ItemVariantDimensionValue> dimensionValues = itemVariantDimensionValueRepository.findByItemSid(phItem.getItemSid());
+                    itemVariantDimensionValueRepository.deleteAll(dimensionValues);
+
+                    List<ItemVariantDimension> variantDimensions = itemVariantDimensionRepository.findByItemSid(phItem.getItemSid());
+                    itemVariantDimensionRepository.deleteAll(variantDimensions);
+
+                    itemTypeRepository.delete(optionalItemType.get());
+
+                    phItemRepository.delete(phItem);
+
+
+                } else if (optionalItemType2.isPresent()) {
+                    phItem.setHasVariants((byte) 0);
+                }
+                itemVariantDimensionRepository.deleteAllByItemClassId(phItem.getItemClassId());
+                itemVariantDimensionValueRepository.deleteAllByItemClassId(phItem.getItemClassId());
             }
-            itemVariantDimensionRepository.deleteAllByItemClassId(phItem.getItemClassId());
-            itemVariantDimensionValueRepository.deleteAllByItemClassId(phItem.getItemClassId());
-        }
 
-        Optional<PhItem> originalItem = phItemRepository.findByItemClassId(itemClassId).stream()
-                .filter(item -> itemTypeRepository.findBySidAndNameEn(item.getItemSid(),
-                        String.valueOf(ItemTypeEnums.ItemTypes.ITEM)).isPresent())
-                .findFirst();
+            Optional<PhItem> originalItem = phItemRepository.findByItemClassId(itemClassId).stream()
+                    .filter(item -> itemTypeRepository.findBySidAndNameEn(item.getItemSid(),
+                            String.valueOf(ItemTypeEnums.ItemTypes.ITEM)).isPresent())
+                    .findFirst();
 
-        if (originalItem.isPresent()) {
-            PhItem itemToUpdate = originalItem.get();
-            itemToUpdate.setHasVariants((byte) 0);
-            phItemRepository.save(itemToUpdate);
-        } else {
-            throw new RuntimeException("Original item with itemClassId: " + itemClassId + " not found.");
+            if (originalItem.isPresent()) {
+                PhItem itemToUpdate = originalItem.get();
+                itemToUpdate.setHasVariants((byte) 0);
+                phItemRepository.save(itemToUpdate);
+            } else {
+                throw new RuntimeException("Original item with itemClassId: " + itemClassId + " not found.");
+            }
+        }else{
+            throw new RuntimeException("Item not found");
         }
     }
 
     @Transactional
-    public void saveFullItem(FullItemDto fullItemDto) throws Exception {
+    public void saveFullItem(FullItemDto fullItemDto) {
 
         //  Save PhItem
         PhItem phItem = modelMapper.map(fullItemDto, PhItem.class);
+        phItem.setType(null);
         phItem = phItemRepository.save(phItem);
 
-        // create and save ItemType
-        ItemType itemType = new ItemType();
-        itemType.setSid(phItem.getItemSid());
-        itemType.setName(ItemTypeEnums.ItemTypes.ITEM.toString());
-        itemType.setNameEn(ItemTypeEnums.ItemTypes.ITEM.toString());
-        phItemRepository.updateItemTypeToZero(phItem.getItemSid());
-        itemTypeRepository.save(itemType);
+        phItemRepository.updateItemTypeToOne(phItem.getItemSid());
 
         if (fullItemDto.getHasVariants() == 1 && fullItemDto.getDimensions() != null) {
             for (DimensionDto dimensionDto : fullItemDto.getDimensions()) {
@@ -120,18 +117,7 @@ public class PhItemService {
 
                 if (dimensionDto.getDimensionValues() != null) {
                     for (DimensionValueDto dimensionValueDto : dimensionDto.getDimensionValues()) {
-                        VariantDimensionValue variantDimensionValue = new VariantDimensionValue();
-                        VariantDimensionValuePK valuePk = new VariantDimensionValuePK();
-                        valuePk.setDimensionId(variantDimension.getDimensionId());
-                        valuePk.setValueSer(dimensionValueDto.getValueSer());
-                        variantDimensionValue.setId(valuePk);
-                        variantDimensionValue.setValueCode(dimensionValueDto.getValueSer().toString());
-                        variantDimensionValue.setValueNameEn(dimensionValueDto.getValueNameEn());
-                        variantDimensionValue.setValueNameAr(dimensionValueDto.getValueNameAr());
-                        variantDimensionValue.setActiveFlag(dimensionValueDto.getDefaultValue());
-                        variantDimensionValue.setCreatedBy("system");
-                        variantDimensionValue.setCreationDate(new Date());
-                        variantDimensionValue.setDimention(variantDimension);
+                        VariantDimensionValue variantDimensionValue = getVariantDimensionValue(dimensionValueDto, variantDimension);
                         variantDimensionValueRepository.save(variantDimensionValue);
                         extractedValues.add(variantDimensionValue);
                     }
@@ -176,6 +162,22 @@ public class PhItemService {
         }
     }
 
+    private static VariantDimensionValue getVariantDimensionValue(DimensionValueDto dimensionValueDto, VariantDimension variantDimension) {
+        VariantDimensionValue variantDimensionValue = new VariantDimensionValue();
+        VariantDimensionValuePK valuePk = new VariantDimensionValuePK();
+        valuePk.setDimensionId(variantDimension.getDimensionId());
+        valuePk.setValueSer(dimensionValueDto.getValueSer());
+        variantDimensionValue.setId(valuePk);
+        variantDimensionValue.setValueCode(dimensionValueDto.getValueSer().toString());
+        variantDimensionValue.setValueNameEn(dimensionValueDto.getValueNameEn());
+        variantDimensionValue.setValueNameAr(dimensionValueDto.getValueNameAr());
+        variantDimensionValue.setActiveFlag(dimensionValueDto.getDefaultValue());
+        variantDimensionValue.setCreatedBy("system");
+        variantDimensionValue.setCreationDate(new Date());
+        variantDimensionValue.setDimention(variantDimension);
+        return variantDimensionValue;
+    }
+
     @Transactional
     public void saveVariantCombinations(PhItem coreItem, List<DimensionDto> dimensions) {
         // get all dimension values
@@ -203,20 +205,42 @@ public class PhItemService {
 
             variantItem.setHasVariants((byte) 0);
             variantItem.setItemType(coreItem.getItemType());
-            variantItem = phItemRepository.save(variantItem);
+             phItemRepository.save(variantItem);
 
-            ItemType variantItemType = new ItemType();
-            variantItemType.setSid(variantItem.getItemSid());
-            if(coreItem.getItemType() == 1){
-                variantItemType.setName(ItemTypeEnums.ItemTypes.VARIANT.toString());
-                variantItemType.setNameEn(ItemTypeEnums.ItemTypes.VARIANT.toString());
-            }else{
-                variantItemType.setName(ItemTypeEnums.ItemTypes.TEMPLATE.toString());
-                variantItemType.setNameEn(ItemTypeEnums.ItemTypes.TEMPLATE.toString());
+             for (DimensionDto dimensionDto : dimensions) {
+                ItemVariantDimension itemVariantDimension = new ItemVariantDimension();
+                ItemVariantDimensionPK pk = new ItemVariantDimensionPK();
+                pk.setItemSid(variantItem.getItemSid()); // Use variantItem for itemSid
+                pk.setDimensionId(dimensionDto.getDimensionId());
+                itemVariantDimension.setId(pk);
+                itemVariantDimension.setItem(variantItem);
+                itemVariantDimension.setItemClassId(variantItem.getItemClassId());
+                itemVariantDimension.setItemCode(variantItem.getItemCode());
+                itemVariantDimensionRepository.save(itemVariantDimension);
+
+                // dimension values
+                if (dimensionDto.getDimensionValues() != null) {
+                    for (DimensionValueDto dimensionValueDto : dimensionDto.getDimensionValues()) {
+                        ItemVariantDimensionValue dimensionValue = new ItemVariantDimensionValue();
+                        ItemVariantDimensionValuePK valuePk = new ItemVariantDimensionValuePK();
+                        valuePk.setDimensionId(pk.getDimensionId());
+                        valuePk.setItemSid(variantItem.getItemSid());
+                        valuePk.setValueSer(dimensionValueDto.getValueSer());
+                        dimensionValue.setId(valuePk);
+                        dimensionValue.setItemVariantDimension(itemVariantDimension);
+                        dimensionValue.setAmountAdded(dimensionValueDto.getAmountAdded());
+                        dimensionValue.setDefaultValue(dimensionValueDto.getDefaultValue());
+                        dimensionValue.setValueNameEn(dimensionValueDto.getValueNameEn());
+                        dimensionValue.setValueNameAr(dimensionValueDto.getValueNameAr());
+                        dimensionValue.setItemClassId(variantItem.getItemClassId());
+                        dimensionValue.setItem(variantItem);
+                        itemVariantDimensionValueRepository.save(dimensionValue);
+                    }
+                }
             }
-
-            itemTypeRepository.save(variantItemType);
         }
+
+
     }
 
     private List<List<DimensionValueDto>> getCombinations(List<List<DimensionValueDto>> lists) {

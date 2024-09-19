@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface PhItemRepository extends JpaRepository<PhItem, Integer> {
     List<PhItem> findByItemClassId(Integer itemClassId);
     @Modifying
-    @Query("UPDATE PhItem p SET p.itemType = 0 WHERE p.itemSid = :sid")
-    int updateItemTypeToZero(@Param("sid") Integer sid);
+    @Query("UPDATE PhItem p SET p.itemType = 1 WHERE p.itemSid = :sid")
+    void updateItemTypeToOne(@Param("sid") Integer sid);
 
 }
